@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:rentaroo/database/databaseHelper.dart';
-import 'package:rentaroo/database/database_initialization.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:rentaroo/home.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
