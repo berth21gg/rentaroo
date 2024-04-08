@@ -17,7 +17,8 @@ class DatabaseHelper {
             category TEXT,
             description TEXT,
             stock INTEGER,
-            price REAL
+            price REAL,
+            image TEXT
           )
         ''');
         await db.execute('''
@@ -43,7 +44,7 @@ class DatabaseHelper {
         // Insertar datos predeterminados
         await initializeDatabase(db);
       },
-      version: 7,
+      version: 1,
     );
   }
 
@@ -66,6 +67,7 @@ class DatabaseHelper {
         description: maps[index]['description'],
         stock: maps[index]['stock'],
         price: maps[index]['price'],
+        image: maps[index]['image'],
       );
     });
   }

@@ -4,13 +4,15 @@ class Furniture {
   String description;
   int stock;
   double price;
+  String image;
 
   Furniture(
       {required this.id,
       required this.category,
       required this.description,
       required this.stock,
-      required this.price});
+      required this.price,
+      required this.image});
   Map<String, dynamic> toMap() {
     return {
       'id_furniture': id,
@@ -18,6 +20,7 @@ class Furniture {
       'description': description,
       'stock': stock,
       'price': price,
+      'image': image,
     };
   }
 
@@ -28,6 +31,7 @@ class Furniture {
       description: map['description'],
       stock: map['stock'],
       price: map['price'],
+      image: map['image'],
     );
   }
 }
