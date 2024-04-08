@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/furniture_model.dart';
@@ -32,10 +33,16 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
                 itemCount: furnitureList.length,
                 itemBuilder: (context, index) {
                   Furniture furniture = furnitureList[index];
-                  return ListTile(
-                    title: Text(furniture.description),
-                    subtitle: Text(
-                        'Category: ${furniture.category}, Price: \$${furniture.price.toString()}'),
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(furniture.description),
+                        subtitle: Text(
+                            'Category: ${furniture.category}, Price: \$${furniture.price.toString()}'),
+                      ),
+                      Image.asset(
+                          'assets/images/${removeDiacritics(furniture.category.toLowerCase().replaceAll(" ", "_"))}/${furniture.image}'),
+                    ],
                   );
                 },
               );

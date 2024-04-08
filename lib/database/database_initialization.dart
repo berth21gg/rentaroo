@@ -32,7 +32,7 @@ Future<void> initializeDatabase(Database db) async {
     'description': 'Silla tiffany dorada',
     'stock': 1000,
     'price': 10.00,
-    'image': 'silla_dorada.jpg'
+    'image': 'silla_tiffany_dorada.jpg'
   });
 
   await db.insert('Furniture', {
