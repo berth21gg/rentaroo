@@ -69,6 +69,7 @@ flutter:
     - assets/images/menaje_y_vajillas/
     - assets/images/mesas/
     - assets/images/sillas/
+    - assets/images/categorias/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

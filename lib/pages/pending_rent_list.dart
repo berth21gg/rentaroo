@@ -2,7 +2,6 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/furniture_model.dart';
-import 'package:rentaroo/models/rent_model.dart';
 
 class PendingRentListScreen extends StatefulWidget {
   const PendingRentListScreen({super.key});

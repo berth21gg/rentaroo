@@ -24,6 +24,7 @@ class DatabaseHelper {
         await db.execute('''
           CREATE TABLE Rent (
             id_rent INTEGER PRIMARY KEY,
+            title TEXT,
             start_date TEXT,
             due_date TEXT,
             reminder_date TEXT,
@@ -108,6 +109,7 @@ class DatabaseHelper {
     return List.generate(maps.length, (index) {
       return Rent(
           id: maps[index]['id_rent'],
+          title: maps[index]['title'],
           startDate: DateTime.parse(maps[index]['start_date']),
           dueDate: DateTime.parse(maps[index]['due_date']),
           reminderDate: DateTime.parse(maps[index]['reminder_date']),

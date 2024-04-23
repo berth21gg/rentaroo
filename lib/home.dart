@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rentaroo/pages/add_rent_page.dart';
 import 'package:rentaroo/pages/pending_rents_page.dart';
 import 'package:rentaroo/pages/rent_history_page.dart';
 
@@ -24,7 +25,14 @@ class _HomeState extends State<Home> {
         child: currentScreen,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddRentPage(),
+            ),
+          );
+        },
         shape: const CircleBorder(),
         child: const Icon(Icons.add),
       ),
