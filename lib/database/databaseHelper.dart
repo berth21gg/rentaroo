@@ -73,6 +73,23 @@ class DatabaseHelper {
     });
   }
 
+  // Método para recuperar mobiliario por cagtegoria
+  Future<List<Furniture>> getAllFurnitureByCategory(String category) async {
+    Database db = await _initDatabase();
+    final List<Map<String, dynamic>> maps = await db
+        .query('Furniture', where: 'category = ?', whereArgs: [category]);
+    return List.generate(maps.length, (index) {
+      return Furniture(
+        id: maps[index]['id_furniture'],
+        category: maps[index]['category'],
+        description: maps[index]['description'],
+        stock: maps[index]['stock'],
+        price: maps[index]['price'],
+        image: maps[index]['image'],
+      );
+    });
+  }
+
   // Método para actualizar
   Future<void> updateFurniture(Furniture furniture) async {
     final db = await _initDatabase();

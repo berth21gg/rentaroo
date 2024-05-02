@@ -40,6 +40,10 @@ dependencies:
   diacritic: ^0.1.5
   table_calendar: ^3.1.1
   intl: ^0.19.0
+  item_count_number_button: ^1.9.2
+  badges: ^3.1.2
+  provider: ^6.1.2
+  collection: ^1.18.0
 
 
 dev_dependencies:
