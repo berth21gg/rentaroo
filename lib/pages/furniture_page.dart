@@ -17,8 +17,6 @@ class FurniturePage extends StatefulWidget {
 }
 
 class _FurniturePageState extends State<FurniturePage> {
-  List<Furniture> _selectedFurniture = [];
-  int _cartBadgeAmount = 0;
   Color color = Colors.red;
 
   @override

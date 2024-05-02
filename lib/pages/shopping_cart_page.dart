@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rentaroo/providers/count_provider.dart';
+import 'package:rentaroo/widgets/shopping_cart_item.dart';
 
 class ShoppingCartPage extends StatefulWidget {
   const ShoppingCartPage({super.key});
@@ -12,11 +15,26 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shopping Cart'),
+        title: Text('Carrito'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text('Carrito de compras'),
+      body: Consumer<CountModel>(
+        builder: (context, countModel, _) {
+          List<SelectedFurnitureItem> selectedFurnitureList =
+              countModel.getSelectedFurnitureList();
+
+          return ListView.builder(
+            itemCount: selectedFurnitureList.length,
+            itemBuilder: (context, index) {
+              SelectedFurnitureItem item = selectedFurnitureList[index];
+              return ShoppingCartItem(
+                  description: item.furniture.description,
+                  price: item.furniture.price,
+                  imageFurniture: item.furniture.image,
+                  quantity: item.count);
+            },
+          );
+        },
       ),
     );
   }

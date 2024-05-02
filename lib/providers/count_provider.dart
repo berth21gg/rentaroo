@@ -1,4 +1,6 @@
 // Modelo que contiene el estado del contador
+import 'dart:ffi';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rentaroo/models/furniture_model.dart';
@@ -56,6 +58,16 @@ class CountModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteItemForSelectedList(String furnitureName) {
+    SelectedFurnitureItem? furnitureSelected =
+        _selectedFurnitureList.firstWhereOrNull(
+            (item) => item.furniture.description == furnitureName);
+    _selectedFurnitureList
+        .removeWhere((item) => item.furniture.description == furnitureName);
+    setCountForFurniture(furnitureName, 0, furnitureSelected!.furniture);
+    notifyListeners();
+  }
+
   int totalSelectedfurnitureCount() {
     int totalCount = 0;
     _countMap.forEach((key, value) {
@@ -70,5 +82,10 @@ class CountModel extends ChangeNotifier {
       print("- ${item.furniture.description}: ${item.count}");
     });
     print("=========================");
+  }
+
+  // Getter para obtener la lista de muebles seleccionados
+  List<SelectedFurnitureItem> getSelectedFurnitureList() {
+    return _selectedFurnitureList;
   }
 }

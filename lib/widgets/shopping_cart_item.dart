@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:item_count_number_button/item_count_number_button.dart';
 import 'package:provider/provider.dart';
-import 'package:rentaroo/models/furniture_model.dart';
 import 'package:rentaroo/providers/count_provider.dart';
 
-class FurnitureCard extends StatefulWidget {
-  final int id;
-  final String category;
-  final String name;
-  final int stock;
+class ShoppingCartItem extends StatefulWidget {
+  final String description;
   final double price;
   final String imageFurniture;
-  const FurnitureCard({
-    super.key,
-    required this.id,
-    required this.category,
-    required this.name,
-    required this.stock,
-    required this.price,
-    required this.imageFurniture,
-  });
+  final int quantity;
+  const ShoppingCartItem(
+      {super.key,
+      required this.description,
+      required this.price,
+      required this.imageFurniture,
+      required this.quantity});
 
   @override
-  State<FurnitureCard> createState() => _FurnitureCardState();
+  State<ShoppingCartItem> createState() => _ShoppingCartItemState();
 }
 
-class _FurnitureCardState extends State<FurnitureCard> {
+class _ShoppingCartItemState extends State<ShoppingCartItem> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CountModel>(
@@ -37,7 +30,6 @@ class _FurnitureCardState extends State<FurnitureCard> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //Imagen del mobiliario
               Container(
                 width: 100,
                 height: 100,
@@ -52,55 +44,48 @@ class _FurnitureCardState extends State<FurnitureCard> {
               SizedBox(
                 width: 12,
               ),
-              // Nombre, stock y precio
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Nombre
                     Text(
-                      widget.name,
+                      widget.description,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: 8,
                     ),
-                    // stock
                     Text(
-                      'Stock disponible: ${widget.stock}',
+                      'Cantidad seleccionada: ${widget.quantity}',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     SizedBox(
                       height: 8,
                     ),
-                    // Contador de cantidad y precio
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // contador de cantidad
-                        ItemCount(
-                          initialValue:
-                              countModel.getCountForFurniture(widget.name),
-                          minValue: 0,
-                          maxValue: widget.stock,
-                          onChanged: (value) {
-                            setState(() {
-                              countModel.setCountForFurniture(
-                                  widget.name,
-                                  value.toInt(),
-                                  Furniture(
-                                      id: widget.id,
-                                      category: widget.category,
-                                      description: widget.name,
-                                      stock: widget.stock,
-                                      price: widget.price,
-                                      image: widget.imageFurniture));
-                            });
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () {
+                            countModel
+                                .deleteItemForSelectedList(widget.description);
                           },
-                          decimalPlaces: 0,
+                          child: Row(
+                            children: [
+                              Text('Eliminar'),
+                              Icon(
+                                Icons.delete,
+                                size: 20.0,
+                              ),
+                            ],
+                          ),
                         ),
-                        // Precio
                         Text(
                           '\$${widget.price}',
                           style: TextStyle(
