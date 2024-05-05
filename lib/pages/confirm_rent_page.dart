@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:rentaroo/models/rent_detail_model.dart';
 import 'package:rentaroo/models/rent_model.dart';
 import 'package:rentaroo/providers/count_provider.dart';
 import 'package:rentaroo/widgets/detail_confirm_card.dart';
@@ -91,15 +92,18 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                         child: const Text('No'),
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(context, 'Si');
                           Navigator.popUntil(context,
                               ModalRoute.withName('/')); // Regresar al home
                           try {
-                            provider.deleteAllItemFromSelectedList();
+                            provider
+                                .deleteAllItemFromSelectedList(); // Limpiar lista de carrito
                           } catch (e) {
                             print('Hubo un problema al limpiar el carrito: $e');
                           }
+                          // Eliminar registro de renta
+                          await DatabaseHelper().deleteRent(lastRent.id!);
                         },
                         child: const Text('Si'),
                       ),
@@ -111,7 +115,7 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                       SnackBar(
                         backgroundColor:
                             Theme.of(context).colorScheme.secondary,
-                        content: Text('Registro cancelado'),
+                        content: const Text('Registro cancelado'),
                         action: SnackBarAction(
                             textColor: Theme.of(context).primaryColor,
                             label: 'OK',
@@ -134,7 +138,49 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                if (!mounted) return; // Verificar si el widget está montado
+                try {
+                  provider.getSelectedFurnitureList().forEach((item) async {
+                    RentDetail rentDetail = RentDetail(
+                        rentId: lastRent.id!,
+                        furnitureId: item.furniture.id,
+                        quantity: item.count);
+                    await DatabaseHelper().insertRentDetail(rentDetail);
+                  });
+                  // limpiar carrito
+                  provider.deleteAllItemFromSelectedList();
+                  // regresar al home
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                  // mostrar mensaje
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      content: const Text('Renta registrada'),
+                      action: SnackBarAction(
+                        textColor: Theme.of(context).primaryColor,
+                        label: 'OK',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+
+                  print('Detalles insertados');
+                  List<RentDetail> rentDetailsByRentId = await DatabaseHelper()
+                      .getRentDetailsByRentId(lastRent.id!);
+                  // Imprimir los resultados
+                  print('Detalles de la renta con ID ${lastRent.id}:');
+                  for (var detail in rentDetailsByRentId) {
+                    print('ID del detalle: ${detail.id}');
+                    print('ID de la renta: ${detail.rentId}');
+                    print('ID del mueble: ${detail.furnitureId}');
+                    print('Cantidad: ${detail.quantity}');
+                    print('-------------------');
+                  }
+                } catch (e) {
+                  print('Hubo un error al insertar los detalles');
+                }
+              },
               child: const Text('Confirmar'),
             ),
           ),

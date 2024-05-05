@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rentaroo/home.dart';
-import 'package:rentaroo/pages/add_rent_page.dart';
-import 'package:rentaroo/pages/category_page.dart';
 import 'package:rentaroo/providers/count_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Ocultar Navigation Bar
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }

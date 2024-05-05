@@ -22,7 +22,7 @@ class _AddRentPageState extends State<AddRentPage> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: now,
-        firstDate: DateTime(2024),
+        firstDate: now,
         lastDate: DateTime(2030));
     if (picked != null) {
       setState(() {
@@ -40,7 +40,7 @@ class _AddRentPageState extends State<AddRentPage> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: now,
-        firstDate: DateTime(2024),
+        firstDate: now,
         lastDate: DateTime(2030));
     if (picked != null) {
       setState(() {
@@ -63,6 +63,7 @@ class _AddRentPageState extends State<AddRentPage> {
         appBar: AppBar(
           title: Text('Nueva renta'),
           centerTitle: true,
+          // Boton regresar para cancelar la renta
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -177,10 +178,10 @@ class _AddRentPageState extends State<AddRentPage> {
                           // Insertar la nueva renta
                           await DatabaseHelper().insertRent(newRent);
 
-                          // Mostrar un mensaje
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Renta agregada con éxito')),
-                          );
+                          // // Mostrar un mensaje
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   SnackBar(content: Text('Renta agregada con éxito')),
+                          // );
 
                           Navigator.push(
                             context,

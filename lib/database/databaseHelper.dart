@@ -197,6 +197,23 @@ class DatabaseHelper {
     });
   }
 
+  // Obtener Detalle de ranta por ID de renta
+  Future<List<RentDetail>> getRentDetailsByRentId(int rentId) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'Rent_Detail',
+      where: 'id_rent = ?',
+      whereArgs: [rentId],
+    );
+    return List.generate(maps.length, (index) {
+      return RentDetail(
+          id: maps[index]['id_detail'],
+          rentId: maps[index]['id_rent'],
+          furnitureId: maps[index]['id_furniture'],
+          quantity: maps[index]['quantity']);
+    });
+  }
+
   // Actualizar Detalle de renta
   Future<void> updateRentDetail(RentDetail rentDetail) async {
     final db = await _initDatabase();

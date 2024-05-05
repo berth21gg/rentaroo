@@ -1,11 +1,11 @@
 class RentDetail {
-  int id;
+  int? id;
   int rentId;
   int furnitureId;
   int quantity;
 
   RentDetail(
-      {required this.id,
+      {this.id,
       required this.rentId,
       required this.furnitureId,
       required this.quantity});
