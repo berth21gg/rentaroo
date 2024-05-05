@@ -29,9 +29,9 @@ class Rent {
     return Rent(
       id: map['id_rent'],
       title: map['title'],
-      startDate: DateTime.fromMillisecondsSinceEpoch(map['startDate']),
-      dueDate: DateTime.fromMillisecondsSinceEpoch(map['dueDate']),
-      reminderDate: DateTime.fromMillisecondsSinceEpoch(map['reminderDate']),
+      startDate: DateTime.fromMillisecondsSinceEpoch(map['start_date']),
+      dueDate: DateTime.fromMillisecondsSinceEpoch(map['due_date']),
+      reminderDate: DateTime.fromMillisecondsSinceEpoch(map['reminder_date']),
       state: map['state'],
     );
   }

@@ -25,9 +25,9 @@ class DatabaseHelper {
           CREATE TABLE Rent (
             id_rent INTEGER PRIMARY KEY,
             title TEXT,
-            start_date TEXT,
-            due_date TEXT,
-            reminder_date TEXT,
+            start_date INTEGER,
+            due_date INTEGER,
+            reminder_date INTEGER,
             state TEXT
           )
         ''');
@@ -132,6 +132,26 @@ class DatabaseHelper {
           reminderDate: DateTime.parse(maps[index]['reminder_date']),
           state: maps[index]['state']);
     });
+  }
+
+  // Obtener la última renta
+  Future<Rent?> getLastRent() async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps =
+        await db.query('Rent', orderBy: 'id_rent DESC', limit: 1);
+    if (maps.isNotEmpty) {
+      return Rent(
+          id: maps[0]['id_rent'],
+          title: maps[0]['title'],
+          startDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[0]['reminder_date']),
+          state: maps[0]['state']);
+    } else {
+      // No hay rentas
+      return null;
+    }
   }
 
   // Actualizar Renta

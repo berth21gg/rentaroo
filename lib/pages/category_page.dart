@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rentaroo/pages/furniture_page.dart';
+import 'package:rentaroo/pages/shopping_cart_page.dart';
+import 'package:rentaroo/providers/count_provider.dart';
 import 'package:rentaroo/widgets/category_card.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -18,7 +20,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Categories'),
+        title: Text('Categorias'),
         centerTitle: true,
       ),
       body: Column(
@@ -93,8 +95,43 @@ class _CategoryPageState extends State<CategoryPage> {
               );
             },
           ),
+          const Spacer(),
+          _navigatorToCart(),
         ],
       ),
     );
+  }
+
+  _navigatorToCart() {
+    return Consumer<CountModel>(builder: (context, countModel, _) {
+      List<SelectedFurnitureItem> selectedFurnitureItem =
+          countModel.getSelectedFurnitureList();
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: selectedFurnitureItem.isNotEmpty
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ShoppingCartPage(),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Text('Ir al carrito'),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

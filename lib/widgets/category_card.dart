@@ -6,6 +6,7 @@ class CategoryCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryCard({
+    super.key,
     required this.categoryName,
     required this.categoryImage,
     required this.onTap,
@@ -22,7 +23,7 @@ class CategoryCard extends StatelessWidget {
         ),
         child: Container(
           height: 100,
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: Row(
             children: [
               Expanded(
@@ -31,14 +32,15 @@ class CategoryCard extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
                     categoryName,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               Expanded(
                 flex: 1,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(8),
                       bottomRight: Radius.circular(8)),
                   child: Image.asset(

@@ -1,6 +1,4 @@
 // Modelo que contiene el estado del contador
-import 'dart:ffi';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rentaroo/models/furniture_model.dart';
@@ -58,6 +56,7 @@ class CountModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Método para eliminar un item de la lista del carrito
   void deleteItemForSelectedList(String furnitureName) {
     SelectedFurnitureItem? furnitureSelected =
         _selectedFurnitureList.firstWhereOrNull(
@@ -65,6 +64,18 @@ class CountModel extends ChangeNotifier {
     _selectedFurnitureList
         .removeWhere((item) => item.furniture.description == furnitureName);
     setCountForFurniture(furnitureName, 0, furnitureSelected!.furniture);
+    notifyListeners();
+  }
+
+  // Método para eliminar todos los items de la lista de carrito
+  void deleteAllItemFromSelectedList() {
+    List<SelectedFurnitureItem> furnitureListCopy = List.from(
+        _selectedFurnitureList); // Copia para iterar sobre esta y modificar la original
+    for (var item in furnitureListCopy) {
+      setCountForFurniture(item.furniture.description, 0, item.furniture);
+      getSelectedFurnitureList().removeWhere((element) =>
+          element.furniture.description == item.furniture.description);
+    }
     notifyListeners();
   }
 
