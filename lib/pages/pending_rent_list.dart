@@ -1,7 +1,9 @@
-import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
-import 'package:rentaroo/models/furniture_model.dart';
+import 'package:rentaroo/models/rent_model.dart';
+import 'package:rentaroo/providers/rent_list_provider.dart';
+import 'package:rentaroo/widgets/pending_rent_card.dart';
 
 class PendingRentListScreen extends StatefulWidget {
   const PendingRentListScreen({super.key});
@@ -11,55 +13,40 @@ class PendingRentListScreen extends StatefulWidget {
 }
 
 class _PendingRentListScreenState extends State<PendingRentListScreen> {
-  Future<List<Furniture>> _fetchFurniture() async {
-    return DatabaseHelper().getAllFurniture();
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndUpdateRentList();
+  }
+
+  Future<void> _fetchAndUpdateRentList() async {
+    // Actualizar la lista de rentas utilizando provider
+    List<Rent> updatedList = await DatabaseHelper().getAllRents();
+    Provider.of<RentListProvider>(context, listen: false)
+        .updateRentList(updatedList);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Furniture>>(
-        future: _fetchFurniture(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Furniture>? furnitureList =
-                snapshot.data; // Lista de mobiliario
-
-            // Verificar si hay muebles en la lista
-            if (furnitureList != null && furnitureList.isNotEmpty) {
-              // Si hay muebles mostrarlos en la lista
-              return ListView.builder(
-                itemCount: furnitureList.length,
-                itemBuilder: (context, index) {
-                  Furniture furniture = furnitureList[index];
-                  return Column(
-                    children: [
-                      ListTile(
-                        title: Text(furniture.description),
-                        subtitle: Text(
-                            'Category: ${furniture.category}, Price: \$${furniture.price.toString()}'),
-                      ),
-                      Image.asset(
-                          'assets/images/${removeDiacritics(furniture.category.toLowerCase().replaceAll(" ", "_"))}/${furniture.image}'),
-                    ],
-                  );
-                },
-              );
-            } else {
-              // Si no hay muebles
-              return Center(
-                child: Text('No hay muebles disponibles'),
-              );
-            }
-          } else if (snapshot.hasError) {
-            // Si ocurre un error al obtener los datos
-            return Center(
-              child: Text('Error al cargar los muebles'),
+      body: Consumer<RentListProvider>(
+        builder: (context, provider, _) {
+          List<Rent> rentList = provider.rentList;
+          if (rentList.isNotEmpty) {
+            return ListView.builder(
+              itemCount: rentList.length,
+              itemBuilder: (context, index) {
+                Rent rent = rentList[index];
+                return PendingRentCard(
+                    title: rent.title,
+                    startDate: rent.startDate,
+                    dueDate: rent.dueDate,
+                    state: rent.state);
+              },
             );
           } else {
-            // Si los datos aún están cargando
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text('No hay rentas disponibles'),
             );
           }
         },

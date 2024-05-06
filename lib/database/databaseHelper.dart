@@ -127,9 +127,11 @@ class DatabaseHelper {
       return Rent(
           id: maps[index]['id_rent'],
           title: maps[index]['title'],
-          startDate: DateTime.parse(maps[index]['start_date']),
-          dueDate: DateTime.parse(maps[index]['due_date']),
-          reminderDate: DateTime.parse(maps[index]['reminder_date']),
+          startDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[index]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['reminder_date']),
           state: maps[index]['state']);
     });
   }

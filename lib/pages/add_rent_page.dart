@@ -169,11 +169,11 @@ class _AddRentPageState extends State<AddRentPage> {
                           startDate: _startDate,
                           dueDate: _dueDate,
                           reminderDate: _reminderDate,
-                          state: _startDate == DateTime.now()
+                          state: DateFormat.yMd().format(_startDate) ==
+                                  DateFormat.yMd().format(DateTime.now())
                               ? 'En proceso'
                               : 'Por cumplir',
                         );
-
                         try {
                           // Insertar la nueva renta
                           await DatabaseHelper().insertRent(newRent);

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rentaroo/models/rent_detail_model.dart';
 import 'package:rentaroo/models/rent_model.dart';
 import 'package:rentaroo/providers/count_provider.dart';
+import 'package:rentaroo/providers/rent_list_provider.dart';
 import 'package:rentaroo/widgets/detail_confirm_card.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/widgets/selected_furniture_confirm_card.dart';
@@ -150,8 +151,13 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                   });
                   // limpiar carrito
                   provider.deleteAllItemFromSelectedList();
-                  // regresar al home
+                  // Actualizar la lista de rentas utilizando provider
+                  List<Rent> updatedList = await DatabaseHelper().getAllRents();
+                  Provider.of<RentListProvider>(context, listen: false)
+                      .updateRentList(updatedList);
                   Navigator.popUntil(context, ModalRoute.withName('/'));
+                  // regresar al home
+
                   // mostrar mensaje
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
