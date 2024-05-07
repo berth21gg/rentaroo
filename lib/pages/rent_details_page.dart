@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
-import 'package:rentaroo/models/furniture_model.dart';
 import 'package:rentaroo/models/rent_model.dart';
 import 'package:rentaroo/widgets/pending_rent_card.dart';
 import 'package:rentaroo/widgets/rent_details_selected_furniture.dart';
@@ -14,11 +13,6 @@ class RentDetailsPage extends StatefulWidget {
 }
 
 class _RentDetailsPageState extends State<RentDetailsPage> {
-  Future<void> _fetchFurnitureList() async {
-    List<Furniture> furnitureList =
-        await DatabaseHelper().getFurnitureByRentId(widget.rentId!);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +31,15 @@ class _RentDetailsPageState extends State<RentDetailsPage> {
                   return Text('Error: ${snapshot.error}');
                 }
                 Rent rent = snapshot.data!;
-                return PendingRentCard(
-                  title: rent.title,
-                  startDate: rent.startDate,
-                  dueDate: rent.dueDate,
-                  state: rent.state,
-                  onTap: () {},
+                return Hero(
+                  tag: rent.id!,
+                  child: PendingRentCard(
+                    title: rent.title,
+                    startDate: rent.startDate,
+                    dueDate: rent.dueDate,
+                    state: rent.state,
+                    onTap: () {},
+                  ),
                 );
               } else {
                 return const CircularProgressIndicator();

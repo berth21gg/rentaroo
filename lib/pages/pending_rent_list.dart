@@ -38,20 +38,30 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
               itemCount: rentList.length,
               itemBuilder: (context, index) {
                 Rent rent = rentList[index];
-                int? idRent = rent.id;
-                return PendingRentCard(
-                  title: rent.title,
-                  startDate: rent.startDate,
-                  dueDate: rent.dueDate,
-                  state: rent.state,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RentDetailsPage(rentId: rent.id),
-                        ));
-                  },
+                return Hero(
+                  tag: rent.id!,
+                  child: PendingRentCard(
+                    title: rent.title,
+                    startDate: rent.startDate,
+                    dueDate: rent.dueDate,
+                    state: rent.state,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return RentDetailsPage(rentId: rent.id);
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                                opacity: animation, child: child);
+                          },
+                          transitionDuration: const Duration(milliseconds: 800),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );
