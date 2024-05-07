@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
+import 'package:rentaroo/pages/rent_details_page.dart';
 import 'package:rentaroo/providers/rent_list_provider.dart';
 import 'package:rentaroo/widgets/pending_rent_card.dart';
 
@@ -37,11 +38,21 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
               itemCount: rentList.length,
               itemBuilder: (context, index) {
                 Rent rent = rentList[index];
+                int? idRent = rent.id;
                 return PendingRentCard(
-                    title: rent.title,
-                    startDate: rent.startDate,
-                    dueDate: rent.dueDate,
-                    state: rent.state);
+                  title: rent.title,
+                  startDate: rent.startDate,
+                  dueDate: rent.dueDate,
+                  state: rent.state,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RentDetailsPage(rentId: rent.id),
+                        ));
+                  },
+                );
               },
             );
           } else {

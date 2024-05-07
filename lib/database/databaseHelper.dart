@@ -90,6 +90,27 @@ class DatabaseHelper {
     });
   }
 
+  // Obtener  lista de mobiliario por ID de renta
+  Future<List<Furniture>> getFurnitureByRentId(int rentId) async {
+    final db = await _initDatabase();
+    // Realiza la consulta utilizando un INNER JOIN entre las tablas Rent_Detail y Furniture
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+        SELECT Furniture.*
+        FROM Rent_Detail
+        INNER JOIN Furniture ON Rent_Detail.id_furniture = Furniture.id_furniture
+        WHERE Rent_Detail.id_rent = ?''', [rentId]);
+    return List.generate(maps.length, (index) {
+      return Furniture(
+        id: maps[index]['id_furniture'],
+        category: maps[index]['category'],
+        description: maps[index]['description'],
+        stock: maps[index]['stock'],
+        price: maps[index]['price'],
+        image: maps[index]['image'],
+      );
+    });
+  }
+
   // Método para actualizar
   Future<void> updateFurniture(Furniture furniture) async {
     final db = await _initDatabase();
@@ -154,6 +175,21 @@ class DatabaseHelper {
       // No hay rentas
       return null;
     }
+  }
+
+  // Obtener renta por ID de renta
+  Future<Rent> getRentByRentId(int rentId) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps =
+        await db.query('Rent', where: 'id_rent = ?', whereArgs: [rentId]);
+    return Rent(
+        id: maps[0]['id_rent'],
+        title: maps[0]['title'],
+        startDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['start_date']),
+        dueDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['due_date']),
+        reminderDate:
+            DateTime.fromMillisecondsSinceEpoch(maps[0]['reminder_date']),
+        state: maps[0]['state']);
   }
 
   // Actualizar Renta
