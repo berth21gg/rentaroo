@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
+import 'package:rentaroo/providers/rent_list_provider.dart';
+import 'package:rentaroo/providers/rent_provider.dart';
 import 'package:rentaroo/widgets/pending_rent_card.dart';
 import 'package:rentaroo/widgets/rent_details_selected_furniture.dart';
 
@@ -14,6 +17,18 @@ class RentDetailsPage extends StatefulWidget {
 
 class _RentDetailsPageState extends State<RentDetailsPage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchAndUpdateRent();
+  }
+
+  Future<void> _fetchAndUpdateRent() async {
+    Rent rent = await DatabaseHelper().getRentByRentId(widget.rentId!);
+    Provider.of<RentProvider>(context, listen: false).updateRent(rent);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -23,38 +38,55 @@ class _RentDetailsPageState extends State<RentDetailsPage> {
       body: Column(
         children: [
           // Card con detalles de la renta
-          FutureBuilder<Rent>(
-            future: DatabaseHelper().getRentByRentId(widget.rentId!),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                Rent rent = snapshot.data!;
-                return Hero(
-                  tag: rent.id!,
-                  child: PendingRentCard(
-                    title: rent.title,
-                    startDate: rent.startDate,
-                    dueDate: rent.dueDate,
-                    state: rent.state,
-                    onTap: () {},
-                  ),
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
+
+          Consumer<RentProvider>(
+            builder: (context, provider, _) {
+              Rent rent = provider.rent;
+              return Hero(
+                tag: widget.rentId!,
+                child: PendingRentCard(
+                  title: rent.title,
+                  startDate: rent.startDate,
+                  dueDate: rent.dueDate,
+                  state: rent.state,
+                  onTap: () {},
+                ),
+              );
             },
           ),
+
+          // FutureBuilder<Rent>(
+          //   future: DatabaseHelper().getRentByRentId(widget.rentId!),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.done) {
+          //       if (snapshot.hasError) {
+          //         return Text('Error: ${snapshot.error}');
+          //       }
+          //       Rent rent = snapshot.data!;
+          //       return Hero(
+          //         tag: rent.id!,
+          //         child: PendingRentCard(
+          //           title: rent.title,
+          //           startDate: rent.startDate,
+          //           dueDate: rent.dueDate,
+          //           state: rent.state,
+          //           onTap: () {},
+          //         ),
+          //       );
+          //     } else {
+          //       return const CircularProgressIndicator();
+          //     }
+          //   },
+          // ),
           // Card con lista de mobiliario
           RentDetailsSelectedFurniture(rentId: widget.rentId!),
-          _buttonToSetState(),
+          _buttonToSetState(widget.rentId!),
         ],
       ),
     );
   }
 
-  _buttonToSetState() {
+  _buttonToSetState(int idRent) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -140,9 +172,37 @@ class _RentDetailsPageState extends State<RentDetailsPage> {
                         child: const Text('Abortar'),
                       ),
                       TextButton(
-                        onPressed: () {
-                          print(state);
+                        onPressed: () async {
+                          //Actualizar el estado de la renta
+                          Rent rentToUpdate =
+                              await DatabaseHelper().getRentByRentId(idRent);
+                          rentToUpdate.state = state!;
+                          await DatabaseHelper().updateRent(rentToUpdate);
+                          Provider.of<RentProvider>(context, listen: false)
+                              .updateRent(rentToUpdate);
+
+                          // Actualizar la lista de rentas
+                          List<Rent> updatedList =
+                              await DatabaseHelper().getAllRents();
+                          Provider.of<RentListProvider>(context, listen: false)
+                              .updateRentList(updatedList);
+
+                          //print(state);
                           Navigator.pop(context);
+
+                          // mostrar mensaje
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              content: const Text('Renta actualizada'),
+                              action: SnackBarAction(
+                                textColor: Theme.of(context).primaryColor,
+                                label: 'OK',
+                                onPressed: () {},
+                              ),
+                            ),
+                          );
                         },
                         child: const Text('Confirmar'),
                       ),

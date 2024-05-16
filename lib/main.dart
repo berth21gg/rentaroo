@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rentaroo/home.dart';
 import 'package:rentaroo/providers/count_provider.dart';
 import 'package:rentaroo/providers/rent_list_provider.dart';
+import 'package:rentaroo/providers/rent_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<RentListProvider>(
           create: (_) => RentListProvider(),
         ),
+        ChangeNotifierProvider<RentProvider>(
+          create: (_) => RentProvider(),
+        )
       ],
       child: MaterialApp(
         title: 'Rentaroo',
