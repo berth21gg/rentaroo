@@ -164,9 +164,12 @@ class _AddRentPageState extends State<AddRentPage> {
                             _startDate.subtract(Duration(days: 2));
 
                         // Crear una instancia del modelo Rent
+                        DateTime _newStartDate = DateTime(
+                            _startDate.year, _startDate.month, _startDate.day);
+                        print(_newStartDate.millisecondsSinceEpoch);
                         Rent newRent = Rent(
                           title: _name,
-                          startDate: _startDate,
+                          startDate: _newStartDate,
                           dueDate: _dueDate,
                           reminderDate: _reminderDate,
                           state: DateFormat.yMd().format(_startDate) ==

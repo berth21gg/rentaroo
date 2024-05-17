@@ -192,6 +192,23 @@ class DatabaseHelper {
         state: maps[0]['state']);
   }
 
+  // Obtener rentas por fecha de inicio
+  Future<List<Rent>> getRentsByStartDate(int startDate) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps =
+        await db.query('Rent', where: 'start_date = ?', whereArgs: [startDate]);
+    return List.generate(maps.length, (index) {
+      return Rent(
+          id: maps[0]['id_rent'],
+          title: maps[0]['title'],
+          startDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[0]['reminder_date']),
+          state: maps[0]['state']);
+    });
+  }
+
   // Actualizar Renta
   Future<void> updateRent(Rent rent) async {
     final db = await _initDatabase();
