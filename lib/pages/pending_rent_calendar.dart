@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
-import 'package:rentaroo/providers/rent_list_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class PendingRentCalendarScreen extends StatefulWidget {
@@ -60,7 +58,7 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
   }
 
   // Día seleccionado
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) async {
+  _onDaySelected(DateTime selectedDay, DateTime focusedDay) async {
     DateTime normalizedSelectedDay = _normalizeDate(selectedDay);
     if (!isSameDay(_selectedDay, normalizedSelectedDay)) {
       setState(() {
@@ -75,6 +73,36 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
         rents[selectedDay] = rentsByDay;
         _selectedRents.value = rentsByDay;
       });
+
+      if (_selectedRents.value.isNotEmpty) {
+        return showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return SizedBox(
+              height: 350,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const Center(
+                      child: Text('Ejemplo de modal'),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }
     }
   }
 
@@ -106,7 +134,7 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
                   color: Theme.of(context).colorScheme.secondary,
                   shape: BoxShape.circle,
                 ),
-                todayDecoration: BoxDecoration(
+                todayDecoration: const BoxDecoration(
                   color: Color.fromARGB(255, 189, 126, 95),
                   shape: BoxShape.circle,
                 ),
