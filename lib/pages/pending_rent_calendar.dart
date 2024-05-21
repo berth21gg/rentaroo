@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
+import 'package:rentaroo/widgets/pending_rent_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class PendingRentCalendarScreen extends StatefulWidget {
@@ -93,9 +94,28 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
                         ),
                       ],
                     ),
-                    const Center(
-                      child: Text('Ejemplo de modal'),
-                    )
+                    Expanded(
+                        child: ValueListenableBuilder<List<Rent>>(
+                      valueListenable: _selectedRents,
+                      builder: (context, value, _) {
+                        return ListView.builder(
+                          itemCount: value.length,
+                          itemBuilder: (context, index) {
+                            Rent rent = value[index];
+                            return Hero(
+                              tag: rent.id!,
+                              child: PendingRentCard(
+                                title: rent.title,
+                                startDate: rent.startDate,
+                                dueDate: rent.dueDate,
+                                state: rent.state,
+                                onTap: () {},
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ))
                   ],
                 ),
               ),
