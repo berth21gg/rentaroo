@@ -47,8 +47,32 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
                     endActionPane:
                         ActionPane(motion: const BehindMotion(), children: [
                       SlidableAction(
-                        onPressed: (context) {
-                          print('Eliminar renta ${rent.id}');
+                        onPressed: (context) async {
+                          try {
+                            await DatabaseHelper().deleteRent(rent.id!);
+                            _fetchAndUpdateRentList();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              content: const Text('Renta eliminada'),
+                              action: SnackBarAction(
+                                textColor: Theme.of(context).primaryColor,
+                                label: 'OK',
+                                onPressed: () {},
+                              ),
+                            ));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              content: const Text('Error al eliminar la renta'),
+                              action: SnackBarAction(
+                                textColor: Theme.of(context).primaryColor,
+                                label: 'OK',
+                                onPressed: () {},
+                              ),
+                            ));
+                          }
                         },
                         backgroundColor: Colors.red,
                         icon: Icons.delete,
