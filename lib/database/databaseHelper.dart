@@ -247,6 +247,24 @@ class DatabaseHelper {
     });
   }
 
+  // Obtener rentas por estado
+  Future<List<Rent>> getRentsByOtherState(String state) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps =
+        await db.query('Rent', where: 'state != ?', whereArgs: [state]);
+    return List.generate(maps.length, (index) {
+      return Rent(
+          id: maps[index]['id_rent'],
+          title: maps[index]['title'],
+          startDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[index]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['reminder_date']),
+          state: maps[index]['state']);
+    });
+  }
+
   // Actualizar Renta
   Future<void> updateRent(Rent rent) async {
     final db = await _initDatabase();

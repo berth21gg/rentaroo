@@ -18,7 +18,6 @@ class RentDetailsPage extends StatefulWidget {
 class _RentDetailsPageState extends State<RentDetailsPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _fetchAndUpdateRent();
   }
@@ -181,11 +180,18 @@ class _RentDetailsPageState extends State<RentDetailsPage> {
                           Provider.of<RentProvider>(context, listen: false)
                               .updateRent(rentToUpdate);
 
-                          // Actualizar la lista de rentas
-                          List<Rent> updatedList =
-                              await DatabaseHelper().getAllRents();
+                          // Actualizar la lista de rentas pendientes
+                          String rentState = 'Por cumplir';
+                          List<Rent> updatedPendingList =
+                              await DatabaseHelper().getRentsByState(rentState);
                           Provider.of<RentListProvider>(context, listen: false)
-                              .updateRentList(updatedList);
+                              .updateRentPendingList(updatedPendingList);
+
+                          // Actualizar la lista del historial de rentas
+                          List<Rent> updatedHistoryList = await DatabaseHelper()
+                              .getRentsByOtherState(rentState);
+                          Provider.of<RentListProvider>(context, listen: false)
+                              .updateRentHistoryList(updatedHistoryList);
 
                           //print(state);
                           Navigator.pop(context);

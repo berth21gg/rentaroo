@@ -14,6 +14,8 @@ class PendingRentListScreen extends StatefulWidget {
 }
 
 class _PendingRentListScreenState extends State<PendingRentListScreen> {
+  final String state = 'Por cumplir';
+
   @override
   void initState() {
     super.initState();
@@ -22,9 +24,9 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
 
   Future<void> _fetchAndUpdateRentList() async {
     // Actualizar la lista de rentas utilizando provider
-    List<Rent> updatedList = await DatabaseHelper().getAllRents();
+    List<Rent> updatedList = await DatabaseHelper().getRentsByState(state);
     Provider.of<RentListProvider>(context, listen: false)
-        .updateRentList(updatedList);
+        .updateRentPendingList(updatedList);
   }
 
   @override
@@ -32,7 +34,7 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
     return Scaffold(
       body: Consumer<RentListProvider>(
         builder: (context, provider, _) {
-          List<Rent> rentList = provider.rentList;
+          List<Rent> rentList = provider.rentPendingList;
           if (rentList.isNotEmpty) {
             return ListView.builder(
               itemCount: rentList.length,
@@ -66,7 +68,7 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
               },
             );
           } else {
-            return Center(
+            return const Center(
               child: Text('No hay rentas disponibles'),
             );
           }

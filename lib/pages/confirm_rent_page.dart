@@ -151,12 +151,22 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                   });
                   // limpiar carrito
                   provider.deleteAllItemFromSelectedList();
-                  // Actualizar la lista de rentas utilizando provider
-                  List<Rent> updatedList = await DatabaseHelper().getAllRents();
+
+                  // Actualizar la lista de rentas pendientes
+                  String rentState = 'Por cumplir';
+                  List<Rent> updatedPendingList =
+                      await DatabaseHelper().getRentsByState(rentState);
                   Provider.of<RentListProvider>(context, listen: false)
-                      .updateRentList(updatedList);
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                      .updateRentPendingList(updatedPendingList);
+
+                  // Actualizar la lista del historial de rentas
+                  List<Rent> updatedHistoryList =
+                      await DatabaseHelper().getRentsByOtherState(rentState);
+                  Provider.of<RentListProvider>(context, listen: false)
+                      .updateRentHistoryList(updatedHistoryList);
+
                   // regresar al home
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
 
                   // mostrar mensaje
                   ScaffoldMessenger.of(context).showSnackBar(
