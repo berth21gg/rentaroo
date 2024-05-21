@@ -199,13 +199,51 @@ class DatabaseHelper {
         await db.query('Rent', where: 'start_date = ?', whereArgs: [startDate]);
     return List.generate(maps.length, (index) {
       return Rent(
-          id: maps[0]['id_rent'],
-          title: maps[0]['title'],
-          startDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['start_date']),
-          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[0]['due_date']),
+          id: maps[index]['id_rent'],
+          title: maps[index]['title'],
+          startDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[index]['due_date']),
           reminderDate:
-              DateTime.fromMillisecondsSinceEpoch(maps[0]['reminder_date']),
-          state: maps[0]['state']);
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['reminder_date']),
+          state: maps[index]['state']);
+    });
+  }
+
+  // Obtener rentas por fecha de inicio y estado
+  Future<List<Rent>> getRentsByStartDateAndState(
+      int startDate, String state) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps = await db.query('Rent',
+        where: 'start_date = ? AND state = ?', whereArgs: [startDate, state]);
+    return List.generate(maps.length, (index) {
+      return Rent(
+          id: maps[index]['id_rent'],
+          title: maps[index]['title'],
+          startDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[index]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['reminder_date']),
+          state: maps[index]['state']);
+    });
+  }
+
+  // Obtener rentas por estado
+  Future<List<Rent>> getRentsByState(String state) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps =
+        await db.query('Rent', where: 'state = ?', whereArgs: [state]);
+    return List.generate(maps.length, (index) {
+      return Rent(
+          id: maps[index]['id_rent'],
+          title: maps[index]['title'],
+          startDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['start_date']),
+          dueDate: DateTime.fromMillisecondsSinceEpoch(maps[index]['due_date']),
+          reminderDate:
+              DateTime.fromMillisecondsSinceEpoch(maps[index]['reminder_date']),
+          state: maps[index]['state']);
     });
   }
 

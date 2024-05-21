@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
+import 'package:rentaroo/pages/rent_details_page.dart';
 import 'package:rentaroo/widgets/pending_rent_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -17,6 +18,7 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
   DateTime now = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  final String state = 'Por cumplir';
 
   Map<DateTime, List<Rent>> rents = {};
   late final ValueNotifier<List<Rent>> _selectedRents;
@@ -38,7 +40,7 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
   // Carga rentas de todos los días
   Future<void> _fetchAllRents() async {
     try {
-      List<Rent> allRents = await DatabaseHelper().getAllRents();
+      List<Rent> allRents = await DatabaseHelper().getRentsByState(state);
       Map<DateTime, List<Rent>> rentMap = {};
       for (var rent in allRents) {
         DateTime rentDay = _normalizeDate(rent.startDate);
@@ -68,7 +70,8 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
       });
 
       List<Rent> rentsByDay = await DatabaseHelper()
-          .getRentsByStartDate(normalizedSelectedDay.millisecondsSinceEpoch);
+          .getRentsByStartDateAndState(
+              normalizedSelectedDay.millisecondsSinceEpoch, state);
 
       setState(() {
         rents[selectedDay] = rentsByDay;
@@ -109,7 +112,15 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
                                 startDate: rent.startDate,
                                 dueDate: rent.dueDate,
                                 state: rent.state,
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          RentDetailsPage(rentId: rent.id),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
