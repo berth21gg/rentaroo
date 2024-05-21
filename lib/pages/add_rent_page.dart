@@ -22,7 +22,7 @@ class _AddRentPageState extends State<AddRentPage> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: now,
-        firstDate: now,
+        firstDate: DateTime(2024),
         lastDate: DateTime(2030));
     if (picked != null) {
       setState(() {
@@ -40,7 +40,7 @@ class _AddRentPageState extends State<AddRentPage> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: now,
-        firstDate: now,
+        firstDate: DateTime(2024),
         lastDate: DateTime(2030));
     if (picked != null) {
       setState(() {
