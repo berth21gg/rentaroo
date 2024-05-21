@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:rentaroo/database/databaseHelper.dart';
 import 'package:rentaroo/models/rent_model.dart';
@@ -42,27 +43,41 @@ class _PendingRentListScreenState extends State<PendingRentListScreen> {
                 Rent rent = rentList[index];
                 return Hero(
                   tag: rent.id!,
-                  child: PendingRentCard(
-                    title: rent.title,
-                    startDate: rent.startDate,
-                    dueDate: rent.dueDate,
-                    state: rent.state,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return RentDetailsPage(rentId: rent.id);
-                          },
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                                opacity: animation, child: child);
-                          },
-                          transitionDuration: const Duration(milliseconds: 800),
-                        ),
-                      );
-                    },
+                  child: Slidable(
+                    endActionPane:
+                        ActionPane(motion: const BehindMotion(), children: [
+                      SlidableAction(
+                        onPressed: (context) {
+                          print('Eliminar renta ${rent.id}');
+                        },
+                        backgroundColor: Colors.red,
+                        icon: Icons.delete,
+                        label: 'Eliminar',
+                      )
+                    ]),
+                    child: PendingRentCard(
+                      title: rent.title,
+                      startDate: rent.startDate,
+                      dueDate: rent.dueDate,
+                      state: rent.state,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return RentDetailsPage(rentId: rent.id);
+                            },
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                  opacity: animation, child: child);
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 800),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               },
