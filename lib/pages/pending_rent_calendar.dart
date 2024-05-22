@@ -62,78 +62,74 @@ class _PendingRentCalendarScreenState extends State<PendingRentCalendarScreen> {
 
   // Día seleccionado
   _onDaySelected(DateTime selectedDay, DateTime focusedDay) async {
-    DateTime normalizedSelectedDay = _normalizeDate(selectedDay);
-    if (!isSameDay(_selectedDay, normalizedSelectedDay)) {
-      setState(() {
-        _selectedDay = normalizedSelectedDay;
-        _focusedDay = focusedDay;
-      });
+    setState(() {
+      _selectedDay = _normalizeDate(selectedDay);
+      _focusedDay = focusedDay;
+    });
 
-      List<Rent> rentsByDay = await DatabaseHelper()
-          .getRentsByStartDateAndState(
-              normalizedSelectedDay.millisecondsSinceEpoch, state);
+    List<Rent> rentsByDay = await DatabaseHelper().getRentsByStartDateAndState(
+        _normalizeDate(selectedDay).millisecondsSinceEpoch, state);
 
-      setState(() {
-        rents[selectedDay] = rentsByDay;
-        _selectedRents.value = rentsByDay;
-      });
+    setState(() {
+      rents[selectedDay] = rentsByDay;
+      _selectedRents.value = rentsByDay;
+    });
 
-      if (_selectedRents.value.isNotEmpty) {
-        return showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return SizedBox(
-              height: 350,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                        child: ValueListenableBuilder<List<Rent>>(
-                      valueListenable: _selectedRents,
-                      builder: (context, value, _) {
-                        return ListView.builder(
-                          itemCount: value.length,
-                          itemBuilder: (context, index) {
-                            Rent rent = value[index];
-                            return Hero(
-                              tag: rent.id!,
-                              child: PendingRentCard(
-                                title: rent.title,
-                                startDate: rent.startDate,
-                                dueDate: rent.dueDate,
-                                state: rent.state,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          RentDetailsPage(rentId: rent.id),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ))
-                  ],
-                ),
+    if (_selectedRents.value.isNotEmpty) {
+      return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SizedBox(
+            height: 350,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                      child: ValueListenableBuilder<List<Rent>>(
+                    valueListenable: _selectedRents,
+                    builder: (context, value, _) {
+                      return ListView.builder(
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          Rent rent = value[index];
+                          return Hero(
+                            tag: rent.id!,
+                            child: PendingRentCard(
+                              title: rent.title,
+                              startDate: rent.startDate,
+                              dueDate: rent.dueDate,
+                              state: rent.state,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RentDetailsPage(rentId: rent.id),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ))
+                ],
               ),
-            );
-          },
-        );
-      }
+            ),
+          );
+        },
+      );
     }
   }
 

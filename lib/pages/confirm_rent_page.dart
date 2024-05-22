@@ -166,7 +166,8 @@ class _ConfirmRentPageState extends State<ConfirmRentPage> {
                       .updateRentHistoryList(updatedHistoryList);
 
                   // regresar al home
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
 
                   // mostrar mensaje
                   ScaffoldMessenger.of(context).showSnackBar(
